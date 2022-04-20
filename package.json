@@ -1,0 +1,31 @@
+{
+  "name": "eks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lotusdg/eks.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.25.2",
+    "prettier": "2.4.1"
+  },
+  "bugs": {
+    "url": "https://github.com/lotusdg/eks/issues"
+  },
+  "homepage": "https://github.com/lotusdg/eks#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "body-parser": "^1.19.1",
+    "dotenv": "^10.0.0",
+    "eslint-config-prettier": "^8.3.0"
+  }
+}
