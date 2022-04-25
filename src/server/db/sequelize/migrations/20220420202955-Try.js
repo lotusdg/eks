@@ -22,7 +22,7 @@ const Sequelize = require('sequelize');
 const info = {
   revision: 1,
   name: 'Try',
-  created: '2022-04-20T19:28:36.117Z',
+  created: '2022-04-25T13:30:00.117Z',
   comment: '',
 };
 
@@ -36,7 +36,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.literal('uuid_generate_v4()'),
+          defaultValue: Sequelize.DataTypes.UUIDV4,
           allowNull: false,
         },
         fullName: {
@@ -87,7 +87,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.literal('uuid_generate_v4()'),
+          defaultValue: Sequelize.DataTypes.UUIDV4,
           allowNull: false,
         },
         city: { type: Sequelize.STRING, field: 'city', allowNull: false },
@@ -122,7 +122,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.literal('uuid_generate_v4()'),
+          defaultValue: Sequelize.DataTypes.UUIDV4,
           allowNull: false,
         },
         code: {
@@ -160,7 +160,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.literal('uuid_generate_v4()'),
+          defaultValue: Sequelize.DataTypes.UUIDV4,
           allowNull: false,
         },
         code: {
@@ -216,7 +216,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.literal('uuid_generate_v4()'),
+          defaultValue: Sequelize.DataTypes.UUIDV4,
           allowNull: false,
         },
         number: {
@@ -377,9 +377,7 @@ module.exports = {
     sequelize, // {
   ) =>
     // eslint-disable-next-line max-len
-    // await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
     execute(queryInterface, sequelize, migrationCommands),
-  // },
 
   down: (queryInterface, sequelize) =>
     execute(queryInterface, sequelize, rollbackCommands),

@@ -38,12 +38,5 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
 
-  // Model.associate = (models) => {
-  //   // Model.belongsTo(models.city);
-  //   // Model.hasMany(models.team, { foreignKey: { allowNull: false } })
-  //   // Model.hasMany(models.account, { foreignKey: { allowNull: false } });
-  //   // Model.belongsToMany(models.account, { through: models.order });
-  // };
-
   return Model;
 };
