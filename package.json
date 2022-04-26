@@ -1,8 +1,8 @@
 {
   "name": "eks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "node src/app.js",
   "scripts": {
     "start": "node src/app.js",
     "sequelize:migrate:make": "./node_modules/.bin/sequelize --migrations-path=./src/server/db/sequelize/migrations/ migration:generate --name",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/lotusdg/eks.git"
   },
-  "author": "",
+  "author": "MA",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^7.32.0",
