@@ -1,10 +1,8 @@
 const { httpCodes } = require('../../utils');
 
 const errorHandler = (err, req, res) => {
-  if (err) {
-    return res.status(httpCodes.serverError).json({ error: err.message });
-  }
-  return res.status(httpCodes.ok).json({ error: false });
+  res.status(httpCodes.serverError);
+  res.render('error', { error: err });
 };
 
 module.exports = { errorHandler };
