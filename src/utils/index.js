@@ -15,8 +15,13 @@ const httpCodes = {
   serverError: 500,
 };
 
+function resFinish(res, code, message) {
+  res.status(code).json(message);
+}
+
 module.exports = {
   fatal,
   createResponse,
   httpCodes,
+  resFinish,
 };

@@ -42,7 +42,7 @@ const migrationCommands = (transaction) => [
         fullName: {
           type: Sequelize.STRING,
           field: 'fullName',
-          allowNull: false,
+          allowNull: true,
         },
         email: {
           type: Sequelize.STRING,

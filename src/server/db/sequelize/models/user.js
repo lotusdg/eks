@@ -5,14 +5,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: sequelize.Sequelize.literal('uuid_generate_v4()'),
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
         field: 'id',
       },
       fullName: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         defaultValue: 'abc',
       },
       email: { type: DataTypes.STRING, allowNull: false },
