@@ -1,11 +1,5 @@
-require('dotenv').config({ path: `${process.env.PWD}/env` });
-
-const {
-  db: {
-    config: { sequelize },
-  },
-} = require('../../../../config');
+const { db } = require('../../../../config');
 
 module.exports = {
-  development: sequelize,
+  development: db,
 };

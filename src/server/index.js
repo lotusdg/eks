@@ -1,15 +1,10 @@
-const { portEnv, db: dbConfig } = require('../config');
+const { portEnv } = require('../config');
 const server = require('./routes');
-const db = require('./db');
 
 let listener;
 
-async function start() {
+function start() {
   try {
-    await db.init();
-    db.setType(dbConfig.defaultType);
-    console.log(`Now db is ${db.getType()}`);
-
     listener = server.listen(portEnv, () => {
       console.log(`Server successfully started on port ${portEnv}`);
     });
