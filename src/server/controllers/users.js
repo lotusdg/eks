@@ -2,9 +2,24 @@ const { resFinish } = require('../../utils');
 
 const services = require('../../services');
 
-async function users(req, res) {
+async function createUser(req, res) {
   const { code, message } = await services.createUser(req.body);
-  resFinish(res, code, message);
+  return resFinish(res, code, message);
 }
 
-module.exports = { users };
+async function updateUser(req, res) {
+  const { code, message } = await services.updateUser(req.body, req.params.id);
+  return resFinish(res, code, message);
+}
+
+async function getUser(req, res) {
+  const { code, message } = await services.getUser(req.params.id);
+  return resFinish(res, code, message);
+}
+
+async function deleteUser(req, res) {
+  const { code, message } = await services.deleteUser(req.params.id);
+  return resFinish(res, code, message);
+}
+
+module.exports = { createUser, updateUser, getUser, deleteUser };
