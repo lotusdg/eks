@@ -5,6 +5,7 @@ const cors = require('cors');
 const server = express();
 const bodyParser = require('body-parser');
 const users = require('./users');
+const accounts = require('./accountProviders');
 
 const { errorHandler } = require('../middlewares');
 const { httpCodes } = require('../../utils');
@@ -19,6 +20,7 @@ server.use(
 );
 
 server.use('/users', users);
+server.use('/accounts', accounts);
 
 server.use((req, res) =>
   res.status(httpCodes.notFound).send({ error: `Page not found ${req.path}` }),
