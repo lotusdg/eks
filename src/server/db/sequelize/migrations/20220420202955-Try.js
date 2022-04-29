@@ -164,7 +164,7 @@ const migrationCommands = (transaction) => [
           allowNull: false,
         },
         code: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.STRING,
           field: 'code',
           allowNull: false,
         },

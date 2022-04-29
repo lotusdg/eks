@@ -4,13 +4,18 @@ module.exports = (sequelize, DataTypes) => {
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: sequelize.Sequelize.literal('uuid_generate_v4()'),
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
         field: 'id',
       },
       number: {
         type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: Date.now(),
+      },
+      status: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: Date.now(),
       },
@@ -29,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       timestamps: false,
       underscored: false,
-      tableName: 'accounts',
+      tableName: 'accountProviders',
     },
   );
 
