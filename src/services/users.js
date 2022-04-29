@@ -7,7 +7,10 @@ async function createUser(body) {
     const timestamp = Date.now();
     const cloneUser = await user.findOne({ where: { email: body.email } });
     if (cloneUser !== null) {
-      throw new Error('this mail is already in use');
+      return createResponse(httpCodes.ok, {
+        success: false,
+        message: 'Email already exists',
+      });
     }
     const result = await user.create({
       fullName: body.fullName || null,
@@ -17,15 +20,16 @@ async function createUser(body) {
       createdAt: timestamp,
       updateAt: timestamp,
       deletedAt: null,
+      phone: body.phone || null,
     });
     if (!result) {
       // eslint-disable-next-line quotes
-      throw new Error("can't create user");
+      throw new Error('unable to create a user');
     }
     return createResponse(httpCodes.ok, result);
   } catch (err) {
     console.error(err);
-    return createResponse(httpCodes.badReq, { error: err.message || err });
+    return createResponse(httpCodes.serverError, { error: err.message || err });
   }
 }
 
@@ -34,6 +38,7 @@ async function updateUser(body, id) {
     const timestamp = Date.now();
     const userFields = {
       fullName: body.fullName,
+      phone: body.phone,
       email: body.email,
       password: body.password,
       updatedAt: timestamp,
@@ -49,7 +54,7 @@ async function updateUser(body, id) {
     });
     return createResponse(httpCodes.ok, result[1][0].dataValues);
   } catch (err) {
-    return createResponse(httpCodes.badReq, { error: err.message || err });
+    return createResponse(httpCodes.serverError, { error: err.message || err });
   }
 }
 
@@ -57,13 +62,14 @@ async function getUser(id) {
   try {
     const result = await user.findOne({ where: { id, deletedAt: null } });
     if (result === null) {
-      return createResponse(httpCodes.ok, {
-        message: `There is no user with id: ${id}`,
+      return createResponse(httpCodes.badReq, {
+        message: `bad user id: ${id}`,
       });
     }
     return createResponse(httpCodes.ok, result);
   } catch (err) {
-    return createResponse(httpCodes.badReq, { error: err.message || err });
+    console.error(err);
+    return createResponse(httpCodes.serverError, { error: err.message || err });
   }
 }
 
@@ -80,7 +86,8 @@ async function deleteUser(id) {
     );
     return createResponse(httpCodes.ok);
   } catch (err) {
-    return createResponse(httpCodes.badReq, {
+    console.error(err);
+    return createResponse(httpCodes.serverError, {
       error: err.message || err,
     });
   }

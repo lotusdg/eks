@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
-    'connectionType',
+    'accountProvider',
     {
       id: {
         type: DataTypes.UUID,
@@ -9,10 +9,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         field: 'id',
       },
-      code: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
-      name: { type: DataTypes.STRING, allowNull: false, defaultValue: 'abc' },
-      status: { type: DataTypes.STRING, allowNull: false, defaultValue: 'abc' },
-      deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
+      number: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: Date.now(),
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -23,18 +24,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Date.now(),
       },
+      deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
     },
     {
       timestamps: false,
       underscored: false,
-      tableName: 'connectionTypes',
-      indexes: [{ fields: ['code'] }],
+      tableName: 'accounts',
     },
   );
-
-  Model.associate = (models) => {
-    Model.belongsTo(models.provider);
-  };
 
   return Model;
 };

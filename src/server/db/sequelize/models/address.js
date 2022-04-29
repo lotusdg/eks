@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
     'address',

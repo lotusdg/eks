@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
     'provider',
@@ -42,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Model.associate = (models) => {
-    Model.belongsTo(models.account);
+    Model.hasMany(models.accountProvider);
   };
 
   return Model;

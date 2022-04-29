@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
     'account',
@@ -10,8 +9,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         field: 'id',
       },
-      number: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
-      deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
+      fullName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'abc',
+      },
+      phone: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -22,17 +28,17 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Date.now(),
       },
+      deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
     },
     {
       timestamps: false,
       underscored: false,
       tableName: 'accounts',
-      indexes: [{ fields: ['number'] }],
     },
   );
 
   Model.associate = (models) => {
-    Model.belongsTo(models.user);
+    Model.hasMany(models.accountProvider);
   };
 
   return Model;
