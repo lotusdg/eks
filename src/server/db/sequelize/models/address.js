@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Model.associate = (models) => {
-    Model.hasMany(models.account);
+    Model.hasOne(models.account);
   };
 
   return Model;

@@ -50,6 +50,9 @@ async function updateUser(body, id) {
     });
     const result = await user.update(userFields, {
       where: { id },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'deletedAt'],
+      },
       returning: true,
     });
     return createResponse(httpCodes.ok, result[1][0].dataValues);
@@ -60,7 +63,12 @@ async function updateUser(body, id) {
 
 async function getUser(id) {
   try {
-    const result = await user.findOne({ where: { id, deletedAt: null } });
+    const result = await user.findOne({
+      where: { id, deletedAt: null },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'deletedAt'],
+      },
+    });
     if (result === null) {
       return createResponse(httpCodes.badReq, {
         message: `bad user id: ${id}`,
@@ -87,9 +95,7 @@ async function deleteUser(id) {
     return createResponse(httpCodes.ok);
   } catch (err) {
     console.error(err);
-    return createResponse(httpCodes.serverError, {
-      error: err.message || err,
-    });
+    return createResponse(httpCodes.serverError, { error: err.message || err });
   }
 }
 

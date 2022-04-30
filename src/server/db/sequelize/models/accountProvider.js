@@ -38,5 +38,10 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
 
+  Model.associate = (models) => {
+    Model.belongsTo(models.account);
+    Model.belongsTo(models.provider);
+  };
+
   return Model;
 };

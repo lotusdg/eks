@@ -38,6 +38,8 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Model.associate = (models) => {
+    Model.belongsTo(models.user);
+    Model.belongsTo(models.address);
     Model.hasMany(models.accountProvider);
   };
 

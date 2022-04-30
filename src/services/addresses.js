@@ -18,4 +18,32 @@ async function createAddress(body) {
   }
 }
 
-module.exports = { createAddress };
+async function updateAddress(body, id) {
+  try {
+    const timestamp = Date.now();
+    const addressFields = {
+      city: body.city,
+      street: body.street,
+      house: body.house,
+      flat: body.flat,
+      updatedAt: timestamp,
+    };
+    Object.keys(addressFields).forEach((key) => {
+      if (typeof addressFields[key] === 'undefined') {
+        delete addressFields[key];
+      }
+    });
+    const resultAddress = await address.update(addressFields, {
+      where: { id },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'deletedAt'],
+      },
+      returning: true,
+    });
+    return { resultAddress };
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+
+module.exports = { createAddress, updateAddress };
