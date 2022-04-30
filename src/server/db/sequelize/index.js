@@ -1,42 +1,68 @@
-const fs = require('fs');
+/* eslint-disable max-len */
+/* eslint-disable import/no-dynamic-require */
+const { readdirSync } = require('fs');
 const path = require('path');
-const { Sequelize, DataTypes } = require('sequelize');
+const Sequelize = require('sequelize');
+const services = require('../../../services');
 
-const { db: dbConfig } = require('../../../config');
+const modelsDir = path.join(__dirname, './models');
+const name = 'sequelize';
 
-const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.username,
-  dbConfig.password,
-  { ...dbConfig },
-);
+module.exports = (config) => {
+  const sequelize = new Sequelize(config);
+  const db = {};
 
-const fileBaseName = path.basename(__filename);
-const db = {};
+  readdirSync(modelsDir)
+    .filter((file) => file.indexOf('.') !== 0 && file.slice(-3) === '.js')
+    .forEach((file) => {
+      // eslint-disable-next-line global-require,
+      const model = require(path.join(modelsDir, file))(
+        sequelize,
+        Sequelize.DataTypes,
+      );
+      db[model.name] = model;
+    });
 
-fs.readdirSync(path.join(__dirname, 'models'))
-  .filter((file) => {
-    const returnFile =
-      file.indexOf('.') !== 0 &&
-      file !== fileBaseName &&
-      file.slice(-3) === '.js';
-    return returnFile;
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname, 'models', file))(
-      sequelize,
-      DataTypes,
-    );
-    db[model.name] = model;
+  Object.keys(db).forEach((modelName) => {
+    if (db[modelName].associate) {
+      db[modelName].associate(db);
+    }
   });
 
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
+  return {
+    testConnection: async () => {
+      try {
+        console.log(`hello from ${name} testConnection`);
+        await sequelize.authenticate();
+      } catch (err) {
+        console.error(err.message || err);
+        throw err;
+      }
+    },
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+    close: async () => {
+      console.log(`INFO: Closing ${name} DB wrapper`);
+      sequelize.close();
+    },
 
-module.exports = db;
+    createUser: async (body) => {
+      const { code, message } = await services.createUser(body, db.user);
+      return { code, message };
+    },
+
+    updateUser: async (body, id) => {
+      const { code, message } = await services.updateUser(body, id, db.user);
+      return { code, message };
+    },
+
+    getUser: async (id) => {
+      const { code, message } = await services.getUser(id, db.user);
+      return { code, message };
+    },
+
+    deleteUser: async (id) => {
+      const { code, message } = await services.deleteUser(id, db.user);
+      return { code, message };
+    },
+  };
+};

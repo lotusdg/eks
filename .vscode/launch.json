@@ -10,7 +10,8 @@
         "<node_internals>/**"
       ],
       "type": "pwa-node",
-      "start": "../src/app.js"
+      "start": "../src/app.js",
+      "envFile": "${workspaceFolder}/.env"
     }
 
   ]

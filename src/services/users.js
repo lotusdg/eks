@@ -1,11 +1,12 @@
-const { user } = require('../server/db/sequelize');
 const { createResponse } = require('../utils');
 const { httpCodes } = require('../utils');
 
-async function createUser(body) {
+async function createUser(body, user) {
   try {
     const timestamp = Date.now();
-    const cloneUser = await user.findOne({ where: { email: body.email } });
+    const cloneUser = await user.findOne({
+      where: { email: body.email },
+    });
     if (cloneUser !== null) {
       throw new Error('this mail is already in use');
     }
@@ -29,7 +30,7 @@ async function createUser(body) {
   }
 }
 
-async function updateUser(body, id) {
+async function updateUser(body, id, user) {
   try {
     const timestamp = Date.now();
     const userFields = {
@@ -53,9 +54,11 @@ async function updateUser(body, id) {
   }
 }
 
-async function getUser(id) {
+async function getUser(id, user) {
   try {
-    const result = await user.findOne({ where: { id, deletedAt: null } });
+    const result = await user.findOne({
+      where: { id, deletedAt: null },
+    });
     if (result === null) {
       return createResponse(httpCodes.ok, {
         message: `There is no user with id: ${id}`,
@@ -67,7 +70,7 @@ async function getUser(id) {
   }
 }
 
-async function deleteUser(id) {
+async function deleteUser(id, user) {
   try {
     const timestamp = Date.now();
     await user.update(
