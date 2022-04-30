@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Model.associate = (models) => {
     Model.hasMany(models.accountProvider);
+    Model.hasOne(models.connectionType);
   };
 
   return Model;

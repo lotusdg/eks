@@ -5,7 +5,8 @@ const cors = require('cors');
 const server = express();
 const bodyParser = require('body-parser');
 const users = require('./users');
-const accounts = require('./accountProviders');
+const accountProviders = require('./accountProviders');
+const accounts = require('./accounts');
 
 const { errorHandler } = require('../middlewares');
 const { httpCodes } = require('../../utils');
@@ -20,6 +21,7 @@ server.use(
 );
 
 server.use('/users', users);
+server.use('/accountProviders', accountProviders);
 server.use('/accounts', accounts);
 
 server.use((req, res) =>

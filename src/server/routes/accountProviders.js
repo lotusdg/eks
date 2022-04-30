@@ -1,8 +1,9 @@
 const express = require('express');
 const controllers = require('../controllers');
 
-const accounts = express.Router();
+const accountProviders = express.Router();
 
-accounts.post('/:id', controllers.createAccountProvider);
+accountProviders.post('/:id', controllers.createAccountProvider);
+accountProviders.get('/:id', controllers.getAccountProvidersByAccountId);
 
-module.exports = accounts;
+module.exports = accountProviders;
