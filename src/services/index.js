@@ -1,11 +1,9 @@
 const users = require('./users');
-const accountProviders = require('./accountProviders');
 const accounts = require('./accounts');
-const addresses = require('./addresses');
+const accountProviders = require('./accountProviders');
 
 module.exports = {
   ...users,
-  ...accountProviders,
   ...accounts,
-  ...addresses,
+  ...accountProviders,
 };
