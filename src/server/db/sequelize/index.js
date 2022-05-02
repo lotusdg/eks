@@ -64,5 +64,20 @@ module.exports = (config) => {
       const { code, message } = await services.deleteUser(id, db.user);
       return { code, message };
     },
+
+    // findUsersEmail(userEmail, userModel)
+    findUsersEmail: async (userEmail) => {
+      const result = await services.findUsersEmail(userEmail, db.user);
+      return result;
+    },
+
+    createRefreshToken: async (userEmail, refreshToken) => {
+      const result = await services.createRefreshToken(
+        userEmail,
+        refreshToken,
+        db.token,
+      );
+      return result;
+    },
   };
 };

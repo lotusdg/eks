@@ -1,22 +1,15 @@
-/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
-    'user',
+    'token',
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        defaultValue: sequelize.Sequelize.literal('uuid_generate_v4()'),
         primaryKey: true,
         allowNull: false,
         field: 'id',
       },
-      fullName: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: 'abc',
-      },
-      email: { type: DataTypes.STRING, allowNull: false },
-      password: { type: DataTypes.STRING, allowNull: false },
+      token: { type: DataTypes.STRING, allowNull: false },
       deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
       createdAt: {
         type: DataTypes.DATE,
@@ -32,10 +25,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       timestamps: false,
       underscored: false,
-      tableName: 'users',
-      indexes: [{ fields: ['email'] }],
+      tableName: 'token',
+      indexes: [{ fields: ['title'] }],
     },
   );
+
+  Model.associate = (models) => {
+    Model.belongsTo(models.user);
+  };
 
   return Model;
 };

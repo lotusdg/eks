@@ -9,3 +9,4 @@ node_modules
 !.elasticbeanstalk/*.global.yml
 
 docker-compose.yml
+db/data/
