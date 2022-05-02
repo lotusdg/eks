@@ -18,7 +18,7 @@ async function createUser(body) {
       password: body.password,
       refreshToken: body.refreshToken || null,
       createdAt: timestamp,
-      updateAt: timestamp,
+      updatedAt: timestamp,
       deletedAt: null,
       phone: body.phone || null,
     });
@@ -92,7 +92,7 @@ async function deleteUser(id) {
         where: { id },
       },
     );
-    return createResponse(httpCodes.ok);
+    return createResponse(httpCodes.ok, { success: true });
   } catch (err) {
     console.error(err);
     return createResponse(httpCodes.serverError, { error: err.message || err });
