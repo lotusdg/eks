@@ -2,12 +2,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const ApiError = require('../error/ApiError');
-const db = require('../db');
+const services = require('../../services');
 
 const registerPost = async (req, res, next) => {
   try {
     // Check if the email is already in the database
-    const emailExist = await db.dbWrapper().findUsersEmail(req.body.email);
+    const emailExist = await services.findUsersEmail(req.body.email);
     if (emailExist) {
       next(ApiError.badRequest('The email is already registered.'));
       return;
@@ -24,7 +24,7 @@ const registerPost = async (req, res, next) => {
       password: hashPassword,
     };
 
-    const result = await db.dbWrapper().createUser(user);
+    const result = await services.createUser(user);
     res.json(result);
   } catch (err) {
     next(ApiError.notImplemented(err.message || err));
@@ -33,7 +33,7 @@ const registerPost = async (req, res, next) => {
 
 const loginPost = async (req, res, next) => {
   try {
-    const user = await db.dbWrapper().findUsersEmail(req.body.email);
+    const user = await services.findUsersEmail(req.body.email);
     if (!user) {
       next(ApiError.badRequest('Email or password is not valid.'));
       return;
@@ -61,7 +61,7 @@ const loginPost = async (req, res, next) => {
       { expiresIn: process.env.REFRESH_EXPIRES_IN },
     );
 
-    await db.dbWrapper().createRefreshToken(user.id, refreshToken);
+    await services.createRefreshToken(user.id, refreshToken);
 
     // Set jwt refresh token in cookie as 'refresh_token'
     res.cookie('refresh_token', refreshToken, {
@@ -113,7 +113,7 @@ const refreshPost = async (req, res, next) => {
       { expiresIn: process.env.REFRESH_EXPIRES_IN },
     );
 
-    await db.dbWrapper().createRefreshToken(verified.id, refreshToken);
+    await services.createRefreshToken(verified.id, refreshToken);
 
     // Set jwt refresh token in cookie as 'refresh_token'
     res.cookie('refresh_token', refreshToken, {

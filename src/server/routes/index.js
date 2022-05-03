@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const users = require('./users');
 
-const controllersAuth = require('../controllers/controllersAuth');
+const auth = require('../controllers/auth');
 const { authorize } = require('../middlewares/authMiddleware');
 
 const { errorHandler } = require('../middlewares');
@@ -22,9 +22,9 @@ server.use(
 );
 server.use(cookieParser());
 
-server.post('/register', controllersAuth.registerPost);
-server.post('/login', controllersAuth.loginPost);
-server.get('/refresh', controllersAuth.refreshPost);
+server.post('/register', auth.registerPost);
+server.post('/login', auth.loginPost);
+server.get('/refresh', auth.refreshPost);
 
 server.use(authorize);
 

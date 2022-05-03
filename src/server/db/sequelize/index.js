@@ -3,7 +3,6 @@
 const { readdirSync } = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const services = require('../../../services');
 
 const modelsDir = path.join(__dirname, './models');
 const name = 'sequelize';
@@ -45,39 +44,6 @@ module.exports = (config) => {
       sequelize.close();
     },
 
-    createUser: async (body) => {
-      const { code, message } = await services.createUser(body, db.user);
-      return { code, message };
-    },
-
-    updateUser: async (body, id) => {
-      const { code, message } = await services.updateUser(body, id, db.user);
-      return { code, message };
-    },
-
-    getUser: async (id) => {
-      const { code, message } = await services.getUser(id, db.user);
-      return { code, message };
-    },
-
-    deleteUser: async (id) => {
-      const { code, message } = await services.deleteUser(id, db.user);
-      return { code, message };
-    },
-
-    // findUsersEmail(userEmail, userModel)
-    findUsersEmail: async (userEmail) => {
-      const result = await services.findUsersEmail(userEmail, db.user);
-      return result;
-    },
-
-    createRefreshToken: async (userEmail, refreshToken) => {
-      const result = await services.createRefreshToken(
-        userEmail,
-        refreshToken,
-        db.token,
-      );
-      return result;
-    },
+    dbModels: db,
   };
 };

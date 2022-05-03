@@ -2,11 +2,12 @@ const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
 const { createResponse } = require('../utils');
 const { httpCodes } = require('../utils');
+const db = require('../server/db');
 
-async function createUser(body, userModel) {
+async function createUser(body) {
   try {
     const timestamp = Date.now();
-    const cloneUser = await userModel.findOne({
+    const cloneUser = await db.dbWrapper().dbModels.user.findOne({
       where: {
         email: body.email,
         deletedAt: { [Sequelize.Op.is]: null },
@@ -15,7 +16,7 @@ async function createUser(body, userModel) {
     if (cloneUser !== null) {
       throw new Error('this mail is already in use');
     }
-    const result = await userModel.create({
+    const result = await db.dbWrapper().dbModels.user.create({
       fullName: body.fullName || null,
       email: body.email,
       password: body.password,
@@ -35,7 +36,7 @@ async function createUser(body, userModel) {
   }
 }
 
-async function updateUser(body, id, userModel) {
+async function updateUser(body, id) {
   try {
     const timestamp = Date.now();
 
@@ -54,7 +55,7 @@ async function updateUser(body, id, userModel) {
         delete userFields[key];
       }
     });
-    const result = await userModel.update(userFields, {
+    const result = await db.dbWrapper().dbModels.user.update(userFields, {
       where: { id },
       returning: true,
     });
@@ -64,9 +65,9 @@ async function updateUser(body, id, userModel) {
   }
 }
 
-async function getUser(id, userModel) {
+async function getUser(id) {
   try {
-    const result = await userModel.findOne({
+    const result = await db.dbWrapper().dbModels.user.findOne({
       where: { id, deletedAt: null },
       include: [{ all: true }],
     });
@@ -81,10 +82,10 @@ async function getUser(id, userModel) {
   }
 }
 
-async function deleteUser(id, userModel) {
+async function deleteUser(id) {
   try {
     const timestamp = Date.now();
-    await userModel.update(
+    await db.dbWrapper().dbModels.user.update(
       {
         deletedAt: timestamp,
       },
@@ -100,13 +101,13 @@ async function deleteUser(id, userModel) {
   }
 }
 
-async function findUsersEmail(userEmail, userModel) {
+async function findUsersEmail(userEmail) {
   try {
     if (!userEmail) {
       throw new Error('ERROR: no email id defined');
     }
 
-    const res = await userModel.findOne({
+    const res = await db.dbWrapper().dbModels.user.findOne({
       where: {
         email: userEmail,
         deletedAt: { [Sequelize.Op.is]: null },
