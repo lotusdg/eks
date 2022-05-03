@@ -1,11 +1,10 @@
-/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
     'connectionType',
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: sequelize.Sequelize.literal('uuid_generate_v4()'),
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
         field: 'id',
@@ -29,7 +28,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
       underscored: false,
       tableName: 'connectionTypes',
-      indexes: [{ fields: ['code'] }],
     },
   );
 
