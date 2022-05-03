@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const users = require('./users');
 const accountProviders = require('./accountProviders');
 const accounts = require('./accounts');
+const transfer = require('./transfer');
 
 const { errorHandler } = require('../middlewares');
 const { httpCodes } = require('../../utils');
@@ -23,6 +24,7 @@ server.use(
 server.use('/users', users);
 server.use('/accountProviders', accountProviders);
 server.use('/accounts', accounts);
+server.use('/transfer', transfer);
 
 server.use((req, res) =>
   res.status(httpCodes.notFound).send({ error: `Page not found ${req.path}` }),
