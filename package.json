@@ -34,6 +34,7 @@
     "eslint-config-prettier": "^8.3.0",
     "express": "^4.17.3",
     "pg": "^8.7.3",
-    "sequelize": "^6.19.0"
+    "sequelize": "^6.19.0",
+    "@mtproto/core": "6.1.0"
   }
 }
