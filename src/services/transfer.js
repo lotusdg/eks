@@ -1,27 +1,38 @@
 require('../userbotTelegram/authorization')();
 const api = require('../userbotTelegram/api');
-// const { provider, connectionType } = require('../server/db/sequelize');
+const {
+  provider,
+  connectionType,
+  accountProvider,
+} = require('../server/db/sequelize');
 const { createResponse } = require('../utils');
 const { httpCodes } = require('../utils');
 
 async function sendMessageToUser(body, accountId) {
   try {
-    // const providers = await provider.findAll({
-    //   include: [{ model: connectionType }],
-    // });
+    const providers = await accountProvider.findAll({
+      where: { accountId },
+      include: [{ model: provider, include: [{ model: connectionType }] }],
+    });
 
     const toSend = [];
-    body.forEach((element) => {
-      if (element.provider === '2f0906c2-9ffe-4327-9015-de9a483dcbeb') {
-        toSend.push(element);
-      }
+
+    body.forEach((element1) => {
+      providers.forEach((element2) => {
+        if (
+          element1.provider === element2.provider.id &&
+          element2.provider.connectionType.code === 3
+        ) {
+          toSend.push(element1);
+          toSend[0].tgId = 380580799; // 380580799 // 5275313320
+        }
+      });
     });
-    toSend[0].telegramId = 380580799; // 380580799 // 5275313320
 
     const result = await api.call('messages.sendMessage', {
       peer: {
         _: 'inputPeerUser',
-        user_id: toSend[0].telegramId,
+        user_id: toSend[0].tgId,
         access_hash: '',
       },
       message: toSend[0].value, // message
