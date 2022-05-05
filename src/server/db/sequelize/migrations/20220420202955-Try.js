@@ -54,6 +54,11 @@ const migrationCommands = (transaction) => [
           field: 'password',
           allowNull: false,
         },
+        refreshToken: {
+          type: Sequelize.STRING,
+          field: 'refreshToken',
+          allowNull: true,
+        },
         createdAt: {
           type: Sequelize.DATE,
           field: 'createdAt',
@@ -263,51 +268,11 @@ const migrationCommands = (transaction) => [
     ],
   },
   {
-    fn: 'createTable',
-    params: [
-      'token',
-      {
-        id: {
-          type: Sequelize.UUID,
-          field: 'id',
-          primaryKey: true,
-          defaultValue: Sequelize.literal('uuid_generate_v4()'),
-          allowNull: false,
-        },
-        userId: {
-          type: Sequelize.UUID,
-          field: 'userId',
-          onUpdate: 'CASCADE',
-          onDelete: 'SET NULL',
-          references: { model: 'users', key: 'id' },
-          allowNull: true,
-        },
-        token: { type: Sequelize.STRING, field: 'token', allowNull: false },
-        createdAt: {
-          type: Sequelize.DATE,
-          field: 'createdAt',
-          allowNull: false,
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          field: 'updatedAt',
-          allowNull: false,
-        },
-        deletedAt: {
-          type: Sequelize.DATE,
-          field: 'deletedAt',
-          allowNull: true,
-        },
-      },
-      { transaction },
-    ],
-  },
-  {
     fn: 'addIndex',
     params: [
       'users',
       ['email'],
-      { indexName: 'user_email', name: 'user_email', transaction },
+      { indexName: 'users_email', name: 'users_email', transaction },
     ],
   },
   {
@@ -372,10 +337,6 @@ const rollbackCommands = (transaction) => [
   {
     fn: 'dropTable',
     params: ['addresses', { transaction }],
-  },
-  {
-    fn: 'dropTable',
-    params: ['token', { transaction }],
   },
   {
     fn: 'dropTable',
