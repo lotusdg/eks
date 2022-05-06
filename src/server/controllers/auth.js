@@ -3,32 +3,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const ApiError = require('../error/ApiError');
 const services = require('../../services');
+const { resFinish } = require('../../utils');
 
-const registerPost = async (req, res, next) => {
-  try {
-    // Check if the email is already in the database
-    const emailExist = await services.findUsersEmail(req.body.email);
-    if (emailExist) {
-      next(ApiError.badRequest('The email is already registered.'));
-      return;
-    }
-
-    // Hash the password
-    const salt = await bcrypt.genSaltSync(10);
-    const hashPassword = await bcrypt.hashSync(req.body.password, salt);
-
-    const user = {
-      firstName: req.body.firstName || '',
-      lastName: req.body.lastName || '',
-      email: req.body.email,
-      password: hashPassword,
-    };
-
-    const result = await services.createUser(user);
-    res.json(result);
-  } catch (err) {
-    next(ApiError.notImplemented(err.message || err));
-  }
+const registerPost = async (req, res) => {
+  const { code, message } = await services.createUser(req.body);
+  resFinish(res, code, message);
 };
 
 const loginPost = async (req, res, next) => {

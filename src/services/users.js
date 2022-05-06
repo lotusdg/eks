@@ -7,6 +7,15 @@ const db = require('../server/db');
 async function createUser(body) {
   try {
     const timestamp = Date.now();
+    const salt = bcrypt.genSaltSync(10);
+    const hashPassword = bcrypt.hashSync(body.password, salt);
+    const userBody = {
+      firstName: body.firstName || '',
+      lastName: body.lastName || '',
+      email: body.email,
+      password: hashPassword,
+      phone: body.phone,
+    };
     const cloneUser = await db.dbWrapper().dbModels.user.findOne({
       where: {
         email: body.email,
@@ -20,17 +29,15 @@ async function createUser(body) {
       });
     }
     const result = await db.dbWrapper().dbModels.user.create({
-      fullName: body.fullName || null,
-      email: body.email,
-      password: body.password,
-      refreshToken: body.refreshToken || null,
+      fullName: userBody.fullName || null,
+      email: userBody.email,
+      phone: userBody.phone || null,
+      password: userBody.password,
       createdAt: timestamp,
       updatedAt: timestamp,
       deletedAt: null,
-      phone: body.phone || null,
     });
     if (!result) {
-      // eslint-disable-next-line quotes
       throw new Error('unable to create a user');
     }
     return createResponse(httpCodes.ok, result);
@@ -118,7 +125,6 @@ async function findUsersEmail(userEmail) {
     if (!userEmail) {
       throw new Error('ERROR: no email id defined');
     }
-
     const res = await db.dbWrapper().dbModels.user.findOne({
       where: {
         email: userEmail,

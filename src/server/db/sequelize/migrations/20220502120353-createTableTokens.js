@@ -20,7 +20,7 @@ const migrationCommands = (transaction) => [
           type: Sequelize.UUID,
           field: 'id',
           primaryKey: true,
-          defaultValue: Sequelize.literal('uuid_generate_v4()'),
+          defaultValue: Sequelize.DataTypes.UUIDV4,
           allowNull: false,
         },
         userId: {
