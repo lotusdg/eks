@@ -1,9 +1,9 @@
-const { accountProvider, provider } = require('../server/db/sequelize');
+const { dbWrapper } = require('../server/db');
 const { createResponse, httpCodes } = require('../utils');
 
 async function getAccountProvidersByAccountId(accountId) {
   try {
-    const result = await accountProvider.findAll({
+    const result = await dbWrapper().dbModels.accountProvider.findAll({
       where: { accountId, deletedAt: null, status: true },
       attributes: {
         exclude: [
@@ -16,7 +16,7 @@ async function getAccountProvidersByAccountId(accountId) {
       },
       include: [
         {
-          model: provider,
+          model: dbWrapper().dbModels.provider,
           attributes: {
             exclude: ['createdAt', 'updatedAt', 'deletedAt'],
           },

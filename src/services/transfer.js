@@ -1,18 +1,19 @@
 require('../userbotTelegram/authorization')();
 const api = require('../userbotTelegram/api');
-const {
-  provider,
-  connectionType,
-  accountProvider,
-} = require('../server/db/sequelize');
+const { dbWrapper } = require('../server/db');
 const { createResponse } = require('../utils');
 const { httpCodes } = require('../utils');
 
 async function sendMessageToUser(body, accountId) {
   try {
-    const providers = await accountProvider.findAll({
+    const providers = await dbWrapper().dbModels.accountProvider.findAll({
       where: { accountId },
-      include: [{ model: provider, include: [{ model: connectionType }] }],
+      include: [
+        {
+          model: dbWrapper().dbModels.provider,
+          include: [{ model: dbWrapper().dbModels.connectionType }],
+        },
+      ],
     });
 
     const toSend = [];

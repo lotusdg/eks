@@ -1,11 +1,11 @@
-const { account, address, accountProvider } = require('../server/db/sequelize');
+const { dbWrapper } = require('../server/db');
 const { createResponse, httpCodes } = require('../utils');
 
 async function createAccount(body, id) {
   try {
     const timestamp = Date.now();
 
-    const resultAddress = await address.create({
+    const resultAddress = await dbWrapper().dbModels.address.create({
       city: body.addresses.city,
       street: body.addresses.street,
       house: body.addresses.house || null,
@@ -15,7 +15,7 @@ async function createAccount(body, id) {
       deletedAt: null,
     });
 
-    const resultAccount = await account.create({
+    const resultAccount = await dbWrapper().dbModels.account.create({
       fullName: body.account.fullName,
       phone: body.account.phone,
       addressId: resultAddress.id,
@@ -39,7 +39,7 @@ async function createAccount(body, id) {
         });
       }
     });
-    await accountProvider.bulkCreate(providers);
+    await dbWrapper().dbModels.accountProvider.bulkCreate(providers);
 
     return createResponse(httpCodes.ok, resultAccount);
   } catch (err) {
@@ -50,7 +50,7 @@ async function createAccount(body, id) {
 
 async function getAccountsByUserId(userId) {
   try {
-    const result = await account.findAll({
+    const result = await dbWrapper().dbModels.account.findAll({
       where: {
         userId,
         deletedAt: null,
@@ -60,7 +60,7 @@ async function getAccountsByUserId(userId) {
       },
       include: [
         {
-          model: address,
+          model: dbWrapper().dbModels.address,
           attributes: {
             exclude: ['id', 'createdAt', 'updatedAt', 'deletedAt'],
           },
@@ -89,10 +89,13 @@ async function updateAccount(body, id) {
       }
     });
 
-    const resultAccount = await account.update(accountFields, {
-      where: { id },
-      returning: true,
-    });
+    const resultAccount = await dbWrapper().dbModels.account.update(
+      accountFields,
+      {
+        where: { id },
+        returning: true,
+      },
+    );
 
     const addressFields = {
       city: body.addresses.city,
@@ -106,14 +109,15 @@ async function updateAccount(body, id) {
         delete addressFields[key];
       }
     });
-    await address.update(addressFields, {
+    await dbWrapper().dbModels.address.update(addressFields, {
       where: { id: resultAccount[1][0].addressId },
       returning: false,
     });
 
-    const cloneAccountProviders = await accountProvider.findAll({
-      where: { accountId: id },
-    });
+    const cloneAccountProviders =
+      await dbWrapper().dbModels.accountProvider.findAll({
+        where: { accountId: id },
+      });
 
     const providers = [];
     body.providers.forEach((elementBody) => {
@@ -130,7 +134,7 @@ async function updateAccount(body, id) {
         }
       });
     });
-    await accountProvider.bulkCreate(providers, {
+    await dbWrapper().dbModels.accountProvider.bulkCreate(providers, {
       updateOnDuplicate: ['number', 'status'],
       returning: false,
     });
@@ -145,7 +149,7 @@ async function updateAccount(body, id) {
 async function deleteAccount(id) {
   try {
     const timestamp = Date.now();
-    await account.update(
+    await dbWrapper().dbModels.account.update(
       {
         deletedAt: timestamp,
       },
