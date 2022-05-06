@@ -1,8 +1,8 @@
 const { resFinish } = require('../../utils');
-
 const services = require('../../services');
 
 async function createUser(req, res) {
+  // const { code, message } = await services.createUser(req.body);
   const { code, message } = await services.createUser(req.body);
   return resFinish(res, code, message);
 }

@@ -1,3 +1,4 @@
 const { errorHandler } = require('./errorHandler');
+const { authMiddleware } = require('./authMiddleware');
 
-module.exports = { errorHandler };
+module.exports = { errorHandler, authMiddleware };

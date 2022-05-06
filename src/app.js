@@ -17,9 +17,9 @@ function enableGracefulExit() {
   process.on('unhandledRejection', exitHandler);
 }
 
-function boot() {
+async function boot() {
   enableGracefulExit();
-  server.start();
+  await server.start();
 }
 
 boot();

@@ -272,7 +272,7 @@ const migrationCommands = (transaction) => [
     params: [
       'users',
       ['email'],
-      { indexName: 'user_email', name: 'user_email', transaction },
+      { indexName: 'users_email', name: 'users_email', transaction },
     ],
   },
   {
