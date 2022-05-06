@@ -11,3 +11,4 @@ node_modules
 docker-compose.yml
 db/data/
 package-lock1.json
+src/userbotTelegram/data/1.json
