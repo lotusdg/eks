@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
     'user',
@@ -14,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
         defaultValue: 'abc',
+      },
+      phone: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       email: { type: DataTypes.STRING, allowNull: false },
       password: { type: DataTypes.STRING, allowNull: false },
@@ -36,6 +39,10 @@ module.exports = (sequelize, DataTypes) => {
       indexes: [{ fields: ['email'] }],
     },
   );
+
+  Model.associate = (models) => {
+    Model.hasMany(models.account);
+  };
 
   return Model;
 };

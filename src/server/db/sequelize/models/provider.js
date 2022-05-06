@@ -1,16 +1,15 @@
-/* eslint-disable max-len */
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
     'provider',
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: sequelize.Sequelize.literal('uuid_generate_v4()'),
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false,
         field: 'id',
       },
-      code: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+      code: { type: DataTypes.STRING, allowNull: false, defaultValue: 0 },
       shortName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -42,7 +41,8 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Model.associate = (models) => {
-    Model.belongsTo(models.account);
+    Model.hasMany(models.accountProvider);
+    Model.belongsTo(models.connectionType);
   };
 
   return Model;
