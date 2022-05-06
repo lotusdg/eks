@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       timestamps: false,
       underscored: false,
-      tableName: 'token',
+      tableName: 'tokens',
       indexes: [{ fields: ['title'] }],
     },
   );
