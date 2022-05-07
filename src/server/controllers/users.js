@@ -8,17 +8,17 @@ async function createUser(req, res) {
 }
 
 async function updateUser(req, res) {
-  const { code, message } = await services.updateUser(req.body, req.params.id);
+  const { code, message } = await services.updateUser(req.body, req.user.id);
   return resFinish(res, code, message);
 }
 
 async function getUser(req, res) {
-  const { code, message } = await services.getUser(req.params.id);
+  const { code, message } = await services.getUser(req.user.id);
   return resFinish(res, code, message);
 }
 
 async function deleteUser(req, res) {
-  const { code, message } = await services.deleteUser(req.params.id);
+  const { code, message } = await services.deleteUser(req.user.id);
   return resFinish(res, code, message);
 }
 

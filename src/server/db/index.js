@@ -44,7 +44,6 @@ const setType = (t) => {
     console.log('WARNING: Cannot find provided DB type');
     return false;
   }
-
   type = t;
   console.log(`INFO: The DB type has been changed to ${t}`);
   return true;

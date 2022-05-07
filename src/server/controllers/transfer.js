@@ -2,8 +2,8 @@ const { resFinish } = require('../../utils');
 
 const services = require('../../services');
 
-async function sendMessage(req, res) {
-  const { code, message } = await services.sendMessageToUser(
+async function transfer(req, res) {
+  const { code, message } = await services.sendToTgNumber(
     req.body,
     req.params.accountId,
   );
@@ -11,5 +11,5 @@ async function sendMessage(req, res) {
 }
 
 module.exports = {
-  sendMessage,
+  transfer,
 };

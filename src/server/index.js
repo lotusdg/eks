@@ -1,4 +1,4 @@
-const { portEnv } = require('../config');
+const { portEnv, db: dbConfig } = require('../config');
 const server = require('./routes');
 const db = require('./db');
 
@@ -7,14 +7,13 @@ let listener;
 async function start() {
   try {
     await db.init();
-    db.setType('sequelize');
-    console.log(`Now db is ${db.getType()}`);
-
+    db.setType(dbConfig.defaultType);
+    console.log(`Now db type is ${db.getType()}`);
     listener = server.listen(portEnv, () => {
       console.log(`Server successfully started on port ${portEnv}`);
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.error(err);
   }
 }
 

@@ -51,7 +51,6 @@ async function updateUser(body, id) {
   try {
     const timestamp = Date.now();
 
-    // Hash the password
     const salt = await bcrypt.genSaltSync(10);
     const hashPassword = await bcrypt.hashSync(body.password, salt);
 

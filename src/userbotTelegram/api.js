@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 require('dotenv').config();
 const path = require('path');
 const MTProto = require('@mtproto/core');
@@ -15,33 +16,6 @@ class API {
         path: path.resolve(__dirname, './data/1.json'),
       },
     });
-    // this.mtproto.updates.on('updatesTooLong', (updateInfo) => {
-    //   console.log('updatesTooLong:', updateInfo);
-    // });
-
-    // this.mtproto.updates.on('updateShortMessage', (updateInfo) => {
-    //   console.log('updateShortMessage:', updateInfo);
-    // });
-
-    // this.mtproto.updates.on('updateShortChatMessage', (updateInfo) => {
-    //   console.log('updateShortChatMessage:', updateInfo);
-    // });
-
-    // this.mtproto.updates.on('updateShort', (updateInfo) => {
-    //   console.log('updateShort:', updateInfo);
-    // });
-
-    // this.mtproto.updates.on('updatesCombined', (updateInfo) => {
-    //   console.log('updatesCombined:', updateInfo);
-    // });
-
-    // this.mtproto.updates.on('updates', (updateInfo) => {
-    //   console.log('updates:', updateInfo);
-    // });
-
-    // this.mtproto.updates.on('updateShortSentMessage', (updateInfo) => {
-    //   console.log('updateShortSentMessage:', updateInfo);
-    // });
   }
 
   async call(method, params, options = {}) {
@@ -95,30 +69,26 @@ class API {
   }
 
   sendCode(phone) {
-    try {
-      return this.call('auth.sendCode', {
-        phone_number: phone,
-        settings: {
-          _: 'codeSettings',
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    return this.call('auth.sendCode', {
+      phone_number: phone,
+      settings: {
+        _: 'codeSettings',
+      },
+    });
   }
 
   signIn({ code, phone, phone_code_hash }) {
     return this.call('auth.signIn', {
       phone_code: code,
       phone_number: phone,
-      phone_code_hash: phone_code_hash,
+      phone_code_hash,
     });
   }
 
   signUp({ phone, phone_code_hash }) {
     return this.call('auth.signUp', {
       phone_number: phone,
-      phone_code_hash: phone_code_hash,
+      phone_code_hash,
       first_name: 'MTProto',
       last_name: 'Core',
     });

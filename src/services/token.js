@@ -3,9 +3,6 @@ const { dbWrapper } = require('../server/db');
 
 async function createRefreshToken(userIdParam, tokenParam) {
   const timeStamp = Date.now();
-
-  console.log(dbWrapper);
-
   try {
     const [tokenItem, created] = await dbWrapper().dbModels.token.findOrCreate({
       where: { userId: userIdParam, deletedAt: { [Sequelize.Op.is]: null } },

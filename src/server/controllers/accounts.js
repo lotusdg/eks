@@ -3,15 +3,12 @@ const { resFinish } = require('../../utils');
 const services = require('../../services');
 
 async function createAccount(req, res) {
-  const { code, message } = await services.createAccount(
-    req.body,
-    req.params.id,
-  );
+  const { code, message } = await services.createAccount(req.body, req.user.id);
   return resFinish(res, code, message);
 }
 
 async function getAccountsByUserId(req, res) {
-  const { code, message } = await services.getAccountsByUserId(req.params.id);
+  const { code, message } = await services.getAccountsByUserId(req.user.id);
   return resFinish(res, code, message);
 }
 
