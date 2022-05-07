@@ -3,9 +3,9 @@ const controllers = require('../controllers');
 
 const accounts = express.Router();
 
-accounts.get('/:id', controllers.getAccountsByUserId);
+accounts.get('/', controllers.getAccountsByUserId);
 accounts.put('/:id', controllers.updateAccount);
-accounts.post('/:id', controllers.createAccount);
+accounts.post('/', controllers.createAccount);
 accounts.delete('/:id', controllers.deleteAccount);
 
 module.exports = accounts;
