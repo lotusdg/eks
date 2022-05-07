@@ -3,6 +3,7 @@ const accounts = require('./accounts');
 const accountProviders = require('./accountProviders');
 const token = require('./token');
 const transfer = require('./transfer');
+const connectionTypes = require('./connectionTypes');
 
 module.exports = {
   ...users,
@@ -10,4 +11,5 @@ module.exports = {
   ...accountProviders,
   ...token,
   ...transfer,
+  ...connectionTypes,
 };

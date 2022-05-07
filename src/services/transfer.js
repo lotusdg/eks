@@ -1,61 +1,47 @@
 require('../userbotTelegram/authorization')();
 const api = require('../userbotTelegram/api');
-// const { dbWrapper } = require('../server/db');
+const { dbWrapper } = require('../server/db');
 const { createResponse } = require('../utils');
 const { httpCodes } = require('../utils');
 
-async function sendToTgNumber(body, accountId) {
+async function sendToTgNumber(obj, accountId) {
   try {
-    // const providers = await dbWrapper().dbModels.accountProvider.findAll({
-    //   where: { accountId },
-    //   include: [
-    //     {
-    //       model: dbWrapper().dbModels.provider,
-    //       include: [{ model: dbWrapper().dbModels.connectionType }],
-    //     },
-    //   ],
-    // });
+    const cloneProvider = await dbWrapper().dbModels.accountProvider.findAll({
+      where: { accountId },
+      include: [
+        {
+          model: dbWrapper().dbModels.account,
+          include: [{ model: dbWrapper().dbModels.address }],
+        },
+        { model: dbWrapper().dbModels.provider },
+      ],
+    });
 
-    // const toSend = [];
-
-    // body.forEach((element1) => {
-    //   providers.forEach((element2) => {
-    //     if (
-    //       element1.provider === element2.provider.id &&
-    //       element2.provider.connectionType.code === 3
-    //     ) {
-    //       toSend.push(element1);
-    //       toSend[0].tgId = 380580799; // 380580799 // 5275313320
-    //     }
-    //   });
-    // });
-
-    // const result = await api.call('messages.sendMessage', {
-    //   peer: {
-    //     _: 'inputPeerUser',
-    //     user_id: toSend[0].tgId,
-    //     access_hash: '',
-    //   },
-    //   message: toSend[0].value, // message
-    //   random_id:
-    //     Math.ceil(Math.random() * 0xffffff) +
-    //     Math.ceil(Math.random() * 0xffffff),
-    // });
-
-    const tgUserId = 380580799;
-    const accountProviderNumber = '12345';
-    const accountFullName = 'Іванов І.І.';
-    const accountAddress = 'м. Черкаси, вул. Чорновола, 1';
-    const accountProviderValue = '123';
-    const accountProviderValueType = 'кухня';
+    const tgUserId = 380580799; // peerID from db
+    const accountProviderNumber = cloneProvider[0].dataValues.number;
+    const accountFullName = cloneProvider[0].dataValues.account.fullName;
+    const accountAddress =
+      // eslint-disable-next-line prefer-template
+      cloneProvider[0].dataValues.account.address.city +
+      ', ' +
+      cloneProvider[0].dataValues.account.address.street +
+      ', ' +
+      cloneProvider[0].dataValues.account.address.house +
+      (!cloneProvider[0].dataValues.account.address.flat
+        ? ''
+        : // eslint-disable-next-line prefer-template
+          '/' + cloneProvider[0].dataValues.account.address.flat);
+    const accountProviderValue = obj.value;
+    const accountProviderCounterTypeType =
+      cloneProvider[0].dataValues.counterType || '';
 
     // eslint-disable-next-line max-len
-    const message = `${accountProviderNumber}\n${accountFullName}\n${accountAddress}\n${accountProviderValue}\n${accountProviderValueType}`;
-    const result = await api.call('messages.sendMessage', {
+    const message = `${accountProviderNumber}\n${accountFullName}\n${accountAddress}\n${accountProviderValue}\n${accountProviderCounterTypeType}`;
+    await api.call('messages.sendMessage', {
       peer: {
         _: 'inputPeerUser',
-        user_id: tgUserId,
-        access_hash: '',
+        user_id: tgUserId, // peerID from db
+        access_hash: '', // accessHash from db
       },
       message,
       random_id:
@@ -63,7 +49,7 @@ async function sendToTgNumber(body, accountId) {
         Math.ceil(Math.random() * 0xffffff),
     });
 
-    return createResponse(httpCodes.ok, result);
+    return createResponse(httpCodes.ok, { success: true });
   } catch (err) {
     console.error(err);
     return createResponse(httpCodes.serverError, { error: err.message || err });

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { resFinish, httpCodes } = require('../../utils');
 const ApiError = require('../error/ApiError');
 
 const authorize = (req, res, next) => {
@@ -12,8 +13,10 @@ const authorize = (req, res, next) => {
     req.user = verified;
     return next();
   } catch (err) {
-    console.log(err);
-    return next(ApiError.notImplemented(err.message || err));
+    console.error(err);
+    return resFinish(res, httpCodes.unauthorized, {
+      error: err.message || err,
+    });
   }
 };
 
