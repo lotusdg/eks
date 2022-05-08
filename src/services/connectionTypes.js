@@ -1,24 +1,29 @@
 const { dbWrapper } = require('../server/db');
-// const { createResponse, httpCodes } = require('../utils');
+const { validation } = require('./helpers/validatorForBodyTransfer');
 
-async function checkType(body) {
+async function validationAndCheckType(body) {
   try {
+    const { validationError, validBody } = await validation(body);
+    if (validationError) {
+      return { validationError };
+    }
+    const { connectionType, provider } = await dbWrapper().dbModels;
     // eslint-disable-next-line no-restricted-syntax
-    for await (const iterator of body) {
-      const cloneProvider = await dbWrapper().dbModels.provider.findOne({
+    for await (const iterator of validBody) {
+      const cloneProvider = await provider.findOne({
         where: {
           id: iterator.provider,
         },
-        include: [{ model: dbWrapper().dbModels.connectionType }],
+        include: [{ model: connectionType }],
       });
       iterator.connectionType = cloneProvider.connectionType.code;
     }
-    return { resCheckType: body };
+    return { resCheckType: validBody };
   } catch (err) {
-    return { err };
+    throw new Error(err);
   }
 }
 
 module.exports = {
-  checkType,
+  validationAndCheckType,
 };

@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Date.now(),
       },
+      counterInstalled: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: Date.now(),
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,

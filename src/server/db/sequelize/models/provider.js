@@ -20,6 +20,16 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'abc',
       },
+      peerId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'abc',
+      },
+      accessHash: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'abc',
+      },
       deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
       createdAt: {
         type: DataTypes.DATE,
