@@ -1,6 +1,7 @@
 require('../userbotTelegram/authorization')();
 const api = require('../userbotTelegram/api');
 const { dbWrapper } = require('../server/db');
+const { createTransferResponse } = require('../utils');
 
 async function sendToTgNumber(obj, accountId) {
   try {
@@ -63,10 +64,12 @@ async function sendToTgNumber(obj, accountId) {
         Math.ceil(Math.random() * 0xffffff),
     });
 
-    return { accountId, success: true, message };
+    return createTransferResponse(obj.provider, true, message);
   } catch (err) {
     console.error(err);
-    return { accountId, success: false, error: err.message || err };
+    return createTransferResponse(obj.provider, false, {
+      error: err.message || err,
+    });
   }
 }
 

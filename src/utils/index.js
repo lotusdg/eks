@@ -2,6 +2,10 @@ function createResponse(code, message) {
   return { code, message };
 }
 
+function createTransferResponse(provider, success, message) {
+  return { provider, success, message };
+}
+
 function fatal(message) {
   console.error(message);
   process.exit(1);
@@ -24,4 +28,5 @@ module.exports = {
   createResponse,
   httpCodes,
   resFinish,
+  createTransferResponse,
 };
