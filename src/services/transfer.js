@@ -7,8 +7,13 @@ async function sendToTgNumber(obj, accountId) {
     const { accountProvider, account, address, provider } = await dbWrapper()
       .dbModels;
 
-    const cloneProvider = await accountProvider.findAll({
-      where: { accountId, status: true },
+    const cloneProvider = await accountProvider.findOne({
+      where: {
+        accountId,
+        providerId: obj.provider,
+        status: true,
+        deletedAt: null,
+      },
       include: [
         {
           model: account,
@@ -18,20 +23,20 @@ async function sendToTgNumber(obj, accountId) {
       ],
     });
 
-    const { peerId, accessHash } = cloneProvider[0].dataValues.provider;
-    const accountProviderNumber = cloneProvider[0].dataValues.number;
-    const accountFullName = cloneProvider[0].dataValues.account.fullName;
+    const { peerId, accessHash } = cloneProvider.dataValues.provider;
+    const accountProviderNumber = cloneProvider.dataValues.number;
+    const accountFullName = cloneProvider.dataValues.account.fullName;
     const accountProviderValue = obj.value;
     const accountProviderCounter =
-      cloneProvider[0].dataValues.counterInstalled || '';
+      cloneProvider.dataValues.counterInstalled || '';
 
-    const accountFullAddress = cloneProvider[0].dataValues.account.address.city
+    const accountFullAddress = cloneProvider.dataValues.account.address.city
       .concat(', ')
-      .concat(cloneProvider[0].dataValues.account.address.street)
+      .concat(cloneProvider.dataValues.account.address.street)
       .concat(', ')
-      .concat(cloneProvider[0].dataValues.account.address.house)
+      .concat(cloneProvider.dataValues.account.address.house)
       .concat(
-        !cloneProvider[0].dataValues.account.address.flat
+        !cloneProvider.dataValues.account.address.flat
           ? ''
           : '/'.concat(cloneProvider[0].dataValues.account.address.flat),
       );
@@ -60,6 +65,7 @@ async function sendToTgNumber(obj, accountId) {
 
     return { accountId, success: true, message };
   } catch (err) {
+    console.error(err);
     return { accountId, success: false, error: err.message || err };
   }
 }
