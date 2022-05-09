@@ -17,6 +17,9 @@ async function transfer(req, res) {
       switch (iterator.connectionType) {
         case 1:
           console.log('case 1');
+          result.push(
+            await services.sendToTgBot(iterator, req.params.accountId),
+          );
           break;
         case 2:
           console.log('case 2');

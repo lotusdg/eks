@@ -2,6 +2,7 @@ require('../userbotTelegram/authorization')();
 const api = require('../userbotTelegram/api');
 const { dbWrapper } = require('../server/db');
 const { createTransferResponse } = require('../utils');
+const { sendMessage, checkProvider } = require('./helpers');
 
 async function sendToTgNumber(obj, accountId) {
   try {
@@ -52,17 +53,7 @@ async function sendToTgNumber(obj, accountId) {
       .concat('\n')
       .concat(accountProviderCounter);
 
-    await api.call('messages.sendMessage', {
-      peer: {
-        _: 'inputPeerUser',
-        user_id: peerId,
-        access_hash: accessHash || '',
-      },
-      message,
-      random_id:
-        Math.ceil(Math.random() * 0xffffff) +
-        Math.ceil(Math.random() * 0xffffff),
-    });
+    await sendMessage(api, peerId, accessHash, message);
 
     return createTransferResponse(obj.provider, true, message);
   } catch (err) {
@@ -73,4 +64,47 @@ async function sendToTgNumber(obj, accountId) {
   }
 }
 
-module.exports = { sendToTgNumber };
+async function sendToTgBot(obj, accountId) {
+  try {
+    const { accountProvider, account, address, provider } = await dbWrapper()
+      .dbModels;
+
+    const cloneProvider = await accountProvider.findOne({
+      where: {
+        accountId,
+        providerId: obj.provider,
+        status: true,
+        deletedAt: null,
+      },
+      include: [
+        {
+          model: account,
+          include: [{ model: address }],
+        },
+        { model: provider },
+      ],
+    });
+
+    const { peerId, accessHash } = cloneProvider.dataValues.provider;
+
+    const providerNumber = cloneProvider.dataValues.number;
+
+    const { resCheck } = await checkProvider(
+      api,
+      peerId,
+      accessHash,
+      providerNumber,
+    );
+
+    const message = 'in develop';
+
+    return createTransferResponse(obj.provider, true, message);
+  } catch (err) {
+    console.error(err);
+    return createTransferResponse(obj.provider, false, {
+      error: err.message || err,
+    });
+  }
+}
+
+module.exports = { sendToTgNumber, sendToTgBot };
