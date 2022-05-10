@@ -2,7 +2,7 @@ require('../userbotTelegram/authorization')();
 const api = require('../userbotTelegram/api');
 const { dbWrapper } = require('../server/db');
 const { createTransferResponse } = require('../utils');
-const { sendMessage, checkProvider } = require('./helpers');
+const { sendMessage, checkProvider, addProviderNumber } = require('./helpers');
 
 async function sendToTgNumber(obj, accountId) {
   try {
@@ -19,9 +19,10 @@ async function sendToTgNumber(obj, accountId) {
       include: [
         {
           model: account,
+          where: { deletedAt: null },
           include: [{ model: address }],
         },
-        { model: provider },
+        { model: provider, where: { deletedAt: null } },
       ],
     });
 
@@ -40,7 +41,7 @@ async function sendToTgNumber(obj, accountId) {
       .concat(
         !cloneProvider.dataValues.account.address.flat
           ? ''
-          : '/'.concat(cloneProvider[0].dataValues.account.address.flat),
+          : '/'.concat(cloneProvider.dataValues.account.address.flat),
       );
 
     const message = accountProviderNumber
@@ -79,13 +80,14 @@ async function sendToTgBot(obj, accountId) {
       include: [
         {
           model: account,
+          where: { deletedAt: null },
           include: [{ model: address }],
         },
-        { model: provider },
+        { model: provider, where: { deletedAt: null } },
       ],
     });
 
-    const { peerId, accessHash } = cloneProvider.dataValues.provider;
+    const { peerId, accessHash, code } = cloneProvider.dataValues.provider;
 
     const providerNumber = cloneProvider.dataValues.number;
 
@@ -96,7 +98,33 @@ async function sendToTgBot(obj, accountId) {
       providerNumber,
     );
 
-    const message = 'in develop';
+    if (resCheck === false) {
+      await addProviderNumber(api, peerId, accessHash, providerNumber);
+    }
+
+    let message;
+
+    switch (code) {
+      case '03357168':
+        message = obj.value.split(':');
+        if (!message[0] || !message[1]) {
+          throw new Error('Water indicators value had not pass the validation');
+        }
+        await sendMessage(api, 380580799, accessHash, message[0]); // peerId!
+        await sendMessage(api, 380580799, accessHash, message[1]); // peerId!
+        break;
+      case '22800735':
+        message = obj.value;
+        if (!message) {
+          throw new Error(
+            'Energy indicators value had not pass the validation',
+          );
+        }
+        await sendMessage(api, 380580799, accessHash, message); // peerId!
+        break;
+      default:
+        throw new Error('Incorrect indicators');
+    }
 
     return createTransferResponse(obj.provider, true, message);
   } catch (err) {

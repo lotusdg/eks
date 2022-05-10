@@ -37,7 +37,9 @@ async function checkOver(api, messageId, providerNumber) {
             tgRes2.messages[0].message,
             `\n.includes(${providerNumber},)`,
           );
-          check = tgRes2.messages[0].message.includes(`\n${providerNumber},`);
+          check =
+            tgRes2.messages[0].message.includes(`\n${providerNumber},`) ||
+            tgRes2.messages[0].message.includes(`\n${providerNumber}(`);
 
           resolve(check);
         } catch (err) {

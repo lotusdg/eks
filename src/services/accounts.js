@@ -31,6 +31,7 @@ async function createAccount(body, id) {
         providers.push({
           number: element.number,
           status: element.status,
+          counterInstalled: element.counterInstalled,
           accountId: resultAccount.id,
           providerId: element.id,
           createdAt: timestamp,
