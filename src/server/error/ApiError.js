@@ -1,3 +1,5 @@
+const { httpCodes } = require('../../utils');
+
 class ApiError extends Error {
   constructor(status, message) {
     super();
@@ -6,28 +8,23 @@ class ApiError extends Error {
   }
 
   static badRequest(message) {
-    return new ApiError(404, message);
+    return new ApiError(httpCodes.notFound, message);
   }
 
   static internal(message) {
-    return new ApiError(500, message);
+    return new ApiError(httpCodes.serverError, message);
   }
 
   static forbidden(message) {
-    return new ApiError(403, message);
+    return new ApiError(httpCodes.forbidden, message);
   }
 
   static authenticationRequired(message) {
-    return new ApiError(401, message);
+    return new ApiError(httpCodes.unauthorized, message);
   }
 
   static notImplemented(message) {
-    return new ApiError(501, message);
-  }
-
-  static fatal(message) {
-    console.error(message);
-    process.exit(1);
+    return new ApiError(httpCodes.notImplemented, message);
   }
 }
 
