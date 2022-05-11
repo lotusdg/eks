@@ -81,7 +81,7 @@ async function sendToTgBot(obj, accountId) {
         {
           model: account,
           where: { deletedAt: null },
-          include: [{ model: address }],
+          include: [{ model: address, where: { deletedAt: null } }],
         },
         { model: provider, where: { deletedAt: null } },
       ],
@@ -91,39 +91,71 @@ async function sendToTgBot(obj, accountId) {
 
     const providerNumber = cloneProvider.dataValues.number;
 
-    const { resCheck } = await checkProvider(
+    if (code === '22800735' && providerNumber.length !== 11) {
+      throw new Error('Incorrect format providerNumber. Mask: 71xxxxxxxxx');
+    }
+
+    const check1 = await checkProvider(
       api,
       peerId,
       accessHash,
       providerNumber,
+      'Налаштування рахунків',
     );
 
-    if (resCheck === false) {
+    console.log(check1);
+
+    if (check1.check === false) {
       await addProviderNumber(api, peerId, accessHash, providerNumber);
     }
 
-    let message;
+    let message = obj.value;
+
+    const check2 = await checkProvider(
+      api,
+      peerId,
+      accessHash,
+      providerNumber,
+      'Показники лічильників',
+    );
+
+    if (check2.check === false) {
+      throw new Error(`Check provider number: ${providerNumber}`);
+    }
 
     switch (code) {
       case '03357168':
-        message = obj.value.split(':');
+        message = message.split(':');
         if (!message[0] || !message[1]) {
           throw new Error('Water indicators value had not pass the validation');
         }
-        await sendMessage(api, 380580799, accessHash, message[0]); // peerId!
-        await sendMessage(api, 380580799, accessHash, message[1]); // peerId!
+        if (check2.lastMessage.includes('Введіть показники')) {
+          await sendMessage(api, 380580799, accessHash, message[0]);
+          // peerId!
+          await sendMessage(api, 380580799, accessHash, message[1]);
+          // peerId!
+        } else {
+          await sendMessage(api, 380580799, accessHash, providerNumber);
+          // peerId!
+          await sendMessage(api, 380580799, accessHash, message[0]);
+          // peerId!
+          await sendMessage(api, 380580799, accessHash, message[1]);
+          // peerId!
+        }
         break;
       case '22800735':
-        message = obj.value;
-        if (!message) {
-          throw new Error(
-            'Energy indicators value had not pass the validation',
-          );
+        if (check2.lastMessage.includes('Введіть показники')) {
+          await sendMessage(api, 380580799, accessHash, message);
+          // peerId!
+        } else {
+          await sendMessage(api, 380580799, accessHash, providerNumber);
+          // peerId!
+          await sendMessage(api, 380580799, accessHash, message);
+          // peerId!
         }
-        await sendMessage(api, 380580799, accessHash, message); // peerId!
         break;
       default:
-        throw new Error('Incorrect indicators');
+        throw new Error('Incorrect provider data');
     }
 
     return createTransferResponse(obj.provider, true, message);
