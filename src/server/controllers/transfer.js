@@ -39,7 +39,7 @@ async function transfer(req, res) {
     return resFinish(res, httpCodes.ok, result);
   } catch (err) {
     console.error(err);
-    return resFinish(res, httpCodes.serverError, err.message || err);
+    return resFinish(res, httpCodes.serverError, { error: err.message || err });
   }
 }
 
