@@ -3,7 +3,9 @@ const { createResponse, httpCodes } = require('../utils');
 
 async function getAccountProvidersByAccountId(accountId) {
   try {
-    const result = await dbWrapper().dbModels.accountProvider.findAll({
+    const { accountProvider, provider, indicator } = await dbWrapper().dbModels;
+
+    const result = await accountProvider.findAll({
       where: { accountId, deletedAt: null, status: true },
       attributes: {
         exclude: [
@@ -16,7 +18,15 @@ async function getAccountProvidersByAccountId(accountId) {
       },
       include: [
         {
-          model: dbWrapper().dbModels.provider,
+          model: provider,
+          include: [
+            {
+              model: indicator,
+              attributes: {
+                exclude: ['providerId', 'createdAt', 'updatedAt', 'deletedAt'],
+              },
+            },
+          ],
           attributes: {
             exclude: ['createdAt', 'updatedAt', 'deletedAt'],
           },
