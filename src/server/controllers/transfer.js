@@ -22,7 +22,10 @@ async function transfer(req, res) {
           );
           break;
         case 2:
-          console.log('case 2');
+          console.log('chergas');
+          result.push(
+            await services.submitFormRequest(iterator, req.params.accountId),
+          );
           break;
         case 3:
           console.log('case 3');
