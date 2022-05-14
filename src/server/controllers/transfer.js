@@ -17,6 +17,9 @@ async function transfer(req, res) {
       switch (iterator.connectionType) {
         case 1:
           console.log('case 1');
+          result.push(
+            await services.sendToTgBot(iterator, req.params.accountId),
+          );
           break;
         case 2:
           console.log('case 2');
@@ -36,7 +39,7 @@ async function transfer(req, res) {
     return resFinish(res, httpCodes.ok, result);
   } catch (err) {
     console.error(err);
-    return resFinish(res, httpCodes.serverError, err.message || err);
+    return resFinish(res, httpCodes.serverError, { error: err.message || err });
   }
 }
 

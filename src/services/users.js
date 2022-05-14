@@ -81,9 +81,9 @@ async function updateUser(body, id) {
 
 async function getUser(id) {
   try {
-    const result = await dbWrapper().dbModels.user.findOne({
+    const { user } = await dbWrapper().dbModels;
+    const result = await user.findOne({
       where: { id, deletedAt: null },
-      include: [{ all: true }],
       attributes: {
         exclude: ['createdAt', 'updatedAt', 'deletedAt'],
       },

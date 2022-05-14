@@ -12,3 +12,4 @@ docker-compose.yml
 db/data/
 package-lock1.json
 src/userbotTelegram/data/1.json
+src/services/helpers/test.js

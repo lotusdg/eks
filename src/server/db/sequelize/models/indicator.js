@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Model = sequelize.define(
-    'provider',
+    'indicator',
     {
       id: {
         type: DataTypes.UUID,
@@ -9,28 +9,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         field: 'id',
       },
-      code: { type: DataTypes.STRING, allowNull: false, defaultValue: 0 },
-      shortName: {
+      code: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'abc',
       },
-      fullName: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'abc',
       },
-      peerId: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: 'abc',
-      },
-      accessHash: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: 'abc',
-      },
-      deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -41,19 +27,17 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Date.now(),
       },
+      deletedAt: { type: DataTypes.DATE, allowNull: true, defaultValue: null },
     },
     {
       timestamps: false,
       underscored: false,
-      tableName: 'providers',
-      indexes: [{ fields: ['code'] }],
+      tableName: 'indicators',
     },
   );
 
   Model.associate = (models) => {
-    Model.hasMany(models.accountProvider);
-    Model.hasMany(models.indicator);
-    Model.belongsTo(models.connectionType);
+    Model.belongsTo(models.provider);
   };
 
   return Model;
