@@ -1,3 +1,5 @@
+const Bull = require('bull');
+
 const { resFinish, httpCodes } = require('../../utils');
 
 const services = require('../../services');
@@ -11,14 +13,15 @@ async function transfer(req, res) {
         error: validationError.message || validationError,
       });
     }
+    const tgQueue = new Bull('tgQueue', 'redis://localhost:6379');
     const result = [];
     // eslint-disable-next-line no-restricted-syntax
-    for await (const iterator of resCheckType) {
-      switch (iterator.connectionType) {
+    for await (const providerObj of resCheckType) {
+      switch (providerObj.connectionType) {
         case 1:
           console.log('case 1');
           result.push(
-            await services.sendToTgBot(iterator, req.params.accountId),
+            await services.sendToTgBot(providerObj, req.params.accountId),
           );
           break;
         case 2:
@@ -26,9 +29,16 @@ async function transfer(req, res) {
           break;
         case 3:
           console.log('case 3');
-          result.push(
-            await services.sendToTgNumber(iterator, req.params.accountId),
+
+          console.log(tgQueue.process(services.sendToTgNumber));
+
+          console.log(
+            await tgQueue.add({
+              obj: providerObj,
+              accountId: req.params.accountId,
+            }),
           );
+          // await services.sendToTgNumber(providerObj, req.params.accountId),
           break;
         default:
           resFinish(res, httpCodes.badReq, {
@@ -36,6 +46,10 @@ async function transfer(req, res) {
           });
       }
     }
+    // tgQueue.on('completed', (job, resJob) => {
+    //   console.log(`Job completed with result ${resJob}`);
+    //   result.push(resJob);
+    // });
     return resFinish(res, httpCodes.ok, result);
   } catch (err) {
     console.error(err);

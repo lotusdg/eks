@@ -4,8 +4,9 @@ const { dbWrapper } = require('../server/db');
 const { createTransferResponse } = require('../utils');
 const { sendMessage, checkProvider, addProviderNumber } = require('./helpers');
 
-async function sendToTgNumber(obj, accountId) {
+async function sendToTgNumber(job) {
   try {
+    const { obj, accountId } = job.data;
     const { accountProvider, account, address, provider } = await dbWrapper()
       .dbModels;
 
