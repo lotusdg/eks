@@ -7,6 +7,7 @@ const url =
   // eslint-disable-next-line max-len
   'http://www.chergas.ck.ua/spozhivacham/pp/77-prijom-pokaznikiv?chronoform=Pokaz&event=submit';
 
+// eslint-disable-next-line no-unused-vars
 async function sendRequest(currReq, currUrl = url) {
   const resStatus = await axios
     .post(currUrl, {
@@ -70,7 +71,7 @@ async function submitFormRequest(obj, accountId) {
     const encodedReq = encodeURI(strReq);
     console.log(encodedReq);
 
-    const resStatus = await sendRequest(encodedReq);
+    const resStatus = true; // await sendRequest(encodedReq);
 
     return createTransferResponse(
       obj.provider,
